@@ -1,0 +1,372 @@
+@model Windows_Programing.ViewModels.HubViewModel
+
+@{
+    ViewData["Title"] = "Interactive Hub & Simulator";
+}
+
+<!-- Page Header -->
+<div class="page-header d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 border-0 pb-0 bg-transparent mb-4">
+    <div>
+        <h1 class="fw-800 text-dark"><i class="bi bi-cpu-fill text-primary me-2"></i>Interactive Hub & Grade Simulator</h1>
+        <p class="text-secondary">Simulate performance outcomes with dynamic grade limits and search the entire Training Registry instantly.</p>
+    </div>
+    <div>
+        <a asp-controller="Home" asp-action="Index" class="btn btn-back-distinct">
+            <i class="bi bi-arrow-left"></i> Back to Dashboard
+        </a>
+    </div>
+</div>
+
+<div class="row g-4 mb-5">
+    <!-- Grade Simulator Column -->
+    <div class="col-xl-7 col-lg-6 animate-in" style="animation-delay: 0.1s;">
+        <div class="simulator-container h-100">
+            <div class="simulator-header">
+                <h4>Course Grade Simulator</h4>
+                <p>Select any course to load its dynamic passing threshold and slide to simulate grades in real time.</p>
+            </div>
+            <div class="simulator-body d-flex flex-column gap-3">
+                <div class="form-group mb-2">
+                    <label class="form-label fw-700 text-dark">1. Select Target Course</label>
+                    <select class="form-select form-select-lg shadow-sm" id="simulatorCourseSelect">
+                        @foreach (var course in Model.Courses)
+                        {
+                            <option value="@course.Id">@course.Name (Pass Min: @course.MinDegree / @course.Degree)</option>
+                        }
+                    </select>
+                </div>
+                
+                <div class="simulator-slider-box shadow-sm">
+                    <div class="simulator-slider-header">
+                        <span class="simulator-slider-title">2. Slide Mock Trainee Score</span>
+                        <span class="simulator-slider-value" id="simulatorScoreText">0</span>
+                    </div>
+                    <input type="range" class="custom-range-slider" id="simulatorScoreRange" min="0" max="100" value="0" />
+                    <div class="d-flex justify-content-between text-muted-sm fw-600 mt-2">
+                        <span>Min Score: 0</span>
+                        <span id="simulatorCourseLimitLabel">Course Maximum: 100</span>
+                    </div>
+                </div>
+                
+                <div class="text-muted-sm px-1 border-start border-primary border-3 ps-3">
+                    <strong class="text-dark">How it works:</strong> The simulator dynamically reads database definitions for course total degrees and minimum criteria. Moving the slider computes success margins, changes outcomes, and provides custom recommendations instantly.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Simulator Outcome Glow Panel -->
+    <div class="col-xl-5 col-lg-6 animate-in" style="animation-delay: 0.2s;">
+        <div class="simulator-output-card status-fail" id="simulatorOutcomeCard">
+            <div class="status-badge-lg" id="simulatorOutcomeBadge">FAIL</div>
+            <div class="simulator-output-percentage" id="simulatorPercentageText">0%</div>
+            <div class="simulator-output-label" id="simulatorPassingMarginText">Score: 0 / 100</div>
+            
+            <div class="simulator-output-progress">
+                <div class="simulator-output-progress-bar" id="simulatorProgressBar"></div>
+            </div>
+            
+            <div class="simulator-output-tips" id="simulatorRecommendationText">
+                Simulated FAIL. Needs robust structural remediation.
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Unified Search Hub Panel -->
+<div class="card border-0 shadow-sm animate-in mb-4" style="animation-delay: 0.3s;">
+    <div class="card-header border-0 bg-transparent pb-0 pt-4 px-4">
+        <h5 class="fw-700 text-dark m-0"><i class="bi bi-search text-primary me-2"></i>Unified System Search Hub</h5>
+        <p class="text-secondary text-muted-sm m-0">Instantly query Trainees, Instructors, and Course catalogs from a single centralized terminal index.</p>
+    </div>
+    
+    <div class="card-body p-4">
+        <!-- Search Toolbar -->
+        <div class="d-flex flex-column flex-md-row gap-3 align-items-center mb-4">
+            <div class="search-bar flex-grow-1">
+                <i class="bi bi-search search-icon"></i>
+                <input type="text" class="form-control form-control-lg shadow-sm" id="unifiedSearchInput" placeholder="Type names, locations, departments, degrees, salaries..." />
+            </div>
+            <div class="flex-shrink-0" style="min-width: 200px;">
+                <span class="text-muted-sm fw-700 d-block mb-1 text-center text-md-start">Active Database Records</span>
+                <span class="badge bg-light text-secondary border px-3 py-2 w-100">
+                    <i class="bi bi-database me-1"></i> Trainees: @Model.Trainees.Count &nbsp;|&nbsp; Courses: @Model.Courses.Count
+                </span>
+            </div>
+        </div>
+
+        <!-- Segmented Navigation Controls -->
+        <div class="search-segmented-tabs shadow-sm">
+            <button class="search-tab-btn active" data-filter="all">
+                <i class="bi bi-grid-fill"></i> All Records
+            </button>
+            <button class="search-tab-btn" data-filter="trainee">
+                <i class="bi bi-people-fill"></i> Trainees
+            </button>
+            <button class="search-tab-btn" data-filter="instructor">
+                <i class="bi bi-person-badge-fill"></i> Instructors
+            </button>
+            <button class="search-tab-btn" data-filter="course">
+                <i class="bi bi-book-fill"></i> Courses
+            </button>
+        </div>
+
+        <!-- No Results Visual Placeholder -->
+        <div class="text-center py-5 d-none" id="searchNoResultsPlaceholder">
+            <i class="bi bi-search-heart text-secondary" style="font-size: 3rem; opacity: 0.5;"></i>
+            <h5 class="fw-700 text-dark mt-3">No Registry Matches Found</h5>
+            <p class="text-secondary text-muted-sm">Try modifying your search keywords or choosing another category tab.</p>
+        </div>
+
+        <!-- Cards Deck Grid -->
+        <div class="search-results-deck" id="searchResultsDeck">
+            
+            <!-- ── Trainees Deck ── -->
+            @foreach (var trainee in Model.Trainees)
+            {
+                <div class="result-card-item" data-type="trainee" data-search="@trainee.Name.ToLower() @(trainee.Address?.ToLower() ?? "") @trainee.Grade.ToLower() @(trainee.Department?.Name?.ToLower() ?? "general")">
+                    <div class="result-card-header">
+                        @if (!string.IsNullOrEmpty(trainee.Image))
+                        {
+                            <img src="/images/uploads/@trainee.Image" class="result-card-avatar" alt="@trainee.Name" onerror="this.src='/images/avatar-default.svg'; this.onerror=null;" />
+                        }
+                        else
+                        {
+                            <div class="result-card-avatar">@trainee.Name.Substring(0, Math.Min(2, trainee.Name.Length)).ToUpper()</div>
+                        }
+                        <div class="result-card-title-box">
+                            <span class="result-card-badge badge-trainee mb-1">Trainee</span>
+                            <h6 class="result-card-title">@trainee.Name</h6>
+                            <p class="result-card-subtitle">@trainee.Address</p>
+                        </div>
+                    </div>
+                    
+                    <div class="result-card-details-grid">
+                        <div class="result-detail-item">
+                            <span class="result-detail-label">Department</span>
+                            <span class="result-detail-value">@(trainee.Department?.Name ?? "General")</span>
+                        </div>
+                        <div class="result-detail-item">
+                            <span class="result-detail-label">Grade Rank</span>
+                            <span class="result-detail-value">@trainee.Grade</span>
+                        </div>
+                    </div>
+                    
+                    <div class="result-card-footer">
+                        <a asp-controller="Trainee" asp-action="Details" asp-route-id="@trainee.Id" class="btn btn-action-details btn-sm">
+                            <i class="bi bi-eye-fill"></i> View Profile
+                        </a>
+                    </div>
+                </div>
+            }
+
+            <!-- ── Instructors Deck ── -->
+            @foreach (var instr in Model.Instructors)
+            {
+                <div class="result-card-item" data-type="instructor" data-search="@instr.Name.ToLower() @(instr.Address?.ToLower() ?? "") @(instr.Department?.Name?.ToLower() ?? "unassigned") @(instr.Course?.Name?.ToLower() ?? "unassigned")">
+                    <div class="result-card-header">
+                        <div class="result-card-avatar bg-info-subtle text-info"><i class="bi bi-person-workspace"></i></div>
+                        <div class="result-card-title-box">
+                            <span class="result-card-badge badge-instructor mb-1">Instructor</span>
+                            <h6 class="result-card-title">@instr.Name</h6>
+                            <p class="result-card-subtitle">@instr.Address</p>
+                        </div>
+                    </div>
+                    
+                    <div class="result-card-details-grid">
+                        <div class="result-detail-item">
+                            <span class="result-detail-label">Department</span>
+                            <span class="result-detail-value">@(instr.Department?.Name ?? "Unassigned")</span>
+                        </div>
+                        <div class="result-detail-item">
+                            <span class="result-detail-label">Salary Allocation</span>
+                            <span class="result-detail-value">$@string.Format("{0:N0}", instr.Salary)</span>
+                        </div>
+                    </div>
+                    
+                    <div class="result-card-footer">
+                        <a asp-controller="Instructor" asp-action="Details" asp-route-id="@instr.Id" class="btn btn-action-details btn-sm">
+                            <i class="bi bi-eye-fill"></i> View Details
+                        </a>
+                    </div>
+                </div>
+            }
+
+            <!-- ── Courses Deck ── -->
+            @foreach (var course in Model.Courses)
+            {
+                <div class="result-card-item" data-type="course" data-search="@course.Name.ToLower() @(course.Department?.Name?.ToLower() ?? "unassigned")">
+                    <div class="result-card-header">
+                        <div class="result-card-avatar bg-primary-light text-primary"><i class="bi bi-journal-bookmark-fill"></i></div>
+                        <div class="result-card-title-box">
+                            <span class="result-card-badge badge-course mb-1">Course</span>
+                            <h6 class="result-card-title">@course.Name</h6>
+                            <p class="result-card-subtitle">@(course.Department?.Name ?? "General Department")</p>
+                        </div>
+                    </div>
+                    
+                    <div class="result-card-details-grid">
+                        <div class="result-detail-item">
+                            <span class="result-detail-label">Course Hours</span>
+                            <span class="result-detail-value">@course.Hours hours</span>
+                        </div>
+                        <div class="result-detail-item">
+                            <span class="result-detail-label">Pass / Max</span>
+                            <span class="result-detail-value">@course.MinDegree / @course.Degree</span>
+                        </div>
+                    </div>
+                    
+                    <div class="result-card-footer">
+                        <a asp-controller="Course" asp-action="Details" asp-route-id="@course.Id" class="btn btn-action-details btn-sm">
+                            <i class="bi bi-eye-fill"></i> Course Details
+                        </a>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Store course mapping in Javascript for instantaneous responsive simulation
+        const courseMap = {
+            @foreach (var c in Model.Courses)
+            {
+                <text>"@c.Id": { name: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(c.Name)), max: @c.Degree, min: @c.MinDegree },</text>
+            }
+        };
+
+        document.addEventListener("DOMContentLoaded", function() {
+            // ── Grade Simulator logic ──
+            const courseSelect = document.getElementById("simulatorCourseSelect");
+            const scoreRange = document.getElementById("simulatorScoreRange");
+            const scoreText = document.getElementById("simulatorScoreText");
+            const limitLabel = document.getElementById("simulatorCourseLimitLabel");
+            
+            const outcomeCard = document.getElementById("simulatorOutcomeCard");
+            const outcomeBadge = document.getElementById("simulatorOutcomeBadge");
+            const percentageText = document.getElementById("simulatorPercentageText");
+            const marginText = document.getElementById("simulatorPassingMarginText");
+            const progressBar = document.getElementById("simulatorProgressBar");
+            const recommendationText = document.getElementById("simulatorRecommendationText");
+
+            function updateSimulator() {
+                const courseId = courseSelect.value;
+                const course = courseMap[courseId];
+                if (!course) return;
+
+                // Adjust slider boundaries
+                scoreRange.max = course.max;
+                limitLabel.textContent = "Course Maximum: " + course.max;
+                
+                // Get slider value
+                let simulatedVal = parseInt(scoreRange.value);
+                if (simulatedVal > course.max) {
+                    simulatedVal = course.max;
+                    scoreRange.value = course.max;
+                }
+                
+                scoreText.textContent = simulatedVal;
+
+                // Compute ratios
+                const percentage = (simulatedVal / course.max) * 100;
+                percentageText.textContent = percentage.toFixed(0) + "%";
+                marginText.textContent = "Score: " + simulatedVal + " / " + course.max + " (Pass Minimum: " + course.min + ")";
+                
+                progressBar.style.width = percentage + "%";
+
+                // Pass or Fail checks
+                const isPass = simulatedVal >= course.min;
+                
+                if (isPass) {
+                    outcomeCard.classList.remove("status-fail");
+                    outcomeCard.classList.add("status-pass");
+                    outcomeBadge.textContent = "PASS";
+                } else {
+                    outcomeCard.classList.remove("status-pass");
+                    outcomeCard.classList.add("status-fail");
+                    outcomeBadge.textContent = "FAIL";
+                }
+
+                // High-fidelity custom recommendations
+                if (simulatedVal === course.max) {
+                    recommendationText.textContent = "Perfect score! Outstanding academic excellence!";
+                } else if (percentage >= 90) {
+                    recommendationText.textContent = "Excellent work! Ready to lead in the field!";
+                } else if (percentage >= 75) {
+                    recommendationText.textContent = "Very Good performance! Solid core understanding!";
+                } else if (isPass) {
+                    recommendationText.textContent = "Simulated outcome PASS. Keep refining details!";
+                } else if (simulatedVal >= (course.min - (course.max * 0.10))) {
+                    recommendationText.textContent = "Simulated FAIL, but very close! A little extra effort will push you over the passing margin.";
+                } else {
+                    recommendationText.textContent = "Simulated FAIL. Needs robust structural remediation.";
+                }
+            }
+
+            if (courseSelect && scoreRange) {
+                // Initialize simulator values
+                const firstCourseId = courseSelect.value;
+                if (firstCourseId && courseMap[firstCourseId]) {
+                    scoreRange.max = courseMap[firstCourseId].max;
+                    scoreRange.value = Math.round(courseMap[firstCourseId].max * 0.7); // Start at 70% mock value
+                }
+                
+                updateSimulator();
+
+                // Listeners
+                courseSelect.addEventListener("change", updateSimulator);
+                scoreRange.addEventListener("input", updateSimulator);
+            }
+
+            // ── Unified Search Hub logic ──
+            const searchInput = document.getElementById("unifiedSearchInput");
+            const searchTabs = document.querySelectorAll(".search-tab-btn");
+            const cards = document.querySelectorAll(".result-card-item");
+            const placeholder = document.getElementById("searchNoResultsPlaceholder");
+
+            function filterResults() {
+                const keyword = searchInput.value.toLowerCase().trim();
+                const activeTab = document.querySelector(".search-tab-btn.active").getAttribute("data-filter");
+                
+                let visibleCount = 0;
+
+                cards.forEach(card => {
+                    const cardType = card.getAttribute("data-type");
+                    const searchData = card.getAttribute("data-search");
+                    
+                    const matchesKeyword = keyword === "" || searchData.includes(keyword);
+                    const matchesTab = activeTab === "all" || cardType === activeTab;
+
+                    if (matchesKeyword && matchesTab) {
+                        card.style.display = "flex";
+                        // Micro-animation triggers
+                        card.classList.add("animate-in");
+                        visibleCount++;
+                    } else {
+                        card.style.display = "none";
+                    }
+                });
+
+                if (visibleCount === 0) {
+                    placeholder.classList.remove("d-none");
+                } else {
+                    placeholder.classList.add("d-none");
+                }
+            }
+
+            if (searchInput) {
+                searchInput.addEventListener("input", filterResults);
+            }
+
+            searchTabs.forEach(tab => {
+                tab.addEventListener("click", function() {
+                    searchTabs.forEach(t => t.classList.remove("active"));
+                    this.classList.add("active");
+                    filterResults();
+                });
+            });
+        });
+    </script>
+}

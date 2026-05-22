@@ -1,0 +1,103 @@
+@model Windows_Programing.ViewModels.InstructorSearchViewModel
+@{
+    ViewData["Title"] = "Instructors";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h1 class="fw-700 mb-1" style="font-size:1.6rem;"><i class="bi bi-person-workspace me-2 text-primary"></i>Instructors</h1>
+        <p class="text-muted mb-0" style="font-size:.875rem;">Manage all training instructors, salaries, and course assignments.</p>
+    </div>
+    <a asp-action="Create" class="btn btn-primary">
+        <i class="bi bi-plus-lg"></i> New Instructor
+    </a>
+</div>
+
+<div class="table-container animate-in">
+    <div class="table-toolbar d-flex justify-content-between align-items-center">
+        <h5>
+            <i class="bi bi-list-ul me-2 text-muted"></i>All Instructors 
+            <span class="badge bg-primary ms-1">@Model.Instructors.Count</span>
+        </h5>
+        
+        <form asp-action="Index" method="get" class="search-bar">
+            <i class="bi bi-search search-icon"></i>
+            <input type="search" name="search" value="@Model.Search" class="form-control" placeholder="Search name, course, department..." />
+        </form>
+    </div>
+
+    @if (!Model.Instructors.Any())
+    {
+        <div class="text-center py-5">
+            <i class="bi bi-person-workspace" style="font-size:3rem;color:#cbd5e1;"></i>
+            <p class="text-muted mt-3">No instructors found. @(string.IsNullOrEmpty(Model.Search) ? "Add the first one." : "Try adjusting your search.")</p>
+            @if (!string.IsNullOrEmpty(Model.Search))
+            {
+                <a asp-action="Index" class="btn btn-sm btn-outline-secondary">Clear Search</a>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead>
+                    <tr>
+                        <th>Photo</th>
+                        <th>Name</th>
+                        <th>Salary</th>
+                        <th>Address</th>
+                        <th>Department</th>
+                        <th>Assigned Course</th>
+                        <th class="text-end">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var ins in Model.Instructors)
+                    {
+                        <tr>
+                            <td>
+                                @if (!string.IsNullOrEmpty(ins.Image))
+                                {
+                                    <img src="~/images/uploads/@ins.Image" class="profile-image" alt="@ins.Name" onerror="this.onerror=null; this.parentElement.innerHTML='<div class=&quot;avatar-placeholder&quot;>@ins.Name[0]</div>';" />
+                                }
+                                else
+                                {
+                                    <div class="avatar-placeholder">@ins.Name[0]</div>
+                                }
+                            </td>
+                            <td class="fw-600">@ins.Name</td>
+                            <td>
+                                <span class="fw-600 text-success">EGP @ins.Salary.ToString("N0")</span>
+                            </td>
+                            <td class="text-muted">@(string.IsNullOrEmpty(ins.Address) ? "N/A" : ins.Address)</td>
+                            <td>
+                                <span class="badge bg-light text-dark border">
+                                    <i class="bi bi-building me-1"></i>@(ins.Department?.Name ?? "Unassigned")
+                                </span>
+                            </td>
+                            <td>
+                                <span class="badge bg-primary-light text-primary border-0">
+                                    <i class="bi bi-journal-text me-1"></i>@(ins.Course?.Name ?? "None")
+                                </span>
+                            </td>
+                            <td>
+                                <div class="d-flex justify-content-end gap-2">
+                                    <a asp-action="Details" asp-route-id="@ins.Id" class="btn btn-sm btn-action-details">
+                                        <i class="bi bi-eye"></i> Details
+                                    </a>
+                                    <a asp-action="Edit" asp-route-id="@ins.Id" class="btn btn-sm btn-action-edit">
+                                        <i class="bi bi-pencil"></i> Edit
+                                    </a>
+                                    <a asp-action="Delete" asp-route-id="@ins.Id" class="btn btn-sm btn-action-delete">
+                                        <i class="bi bi-trash"></i> Delete
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</div>

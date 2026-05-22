@@ -1,0 +1,60 @@
+@model Windows_Programing.Models.Trainee
+@{
+    ViewData["Title"] = "Delete Trainee";
+}
+
+<div class="d-flex align-items-center gap-2 mb-4">
+    <a asp-action="Index" class="btn-back-distinct">
+        <i class="bi bi-arrow-left-short"></i> Back
+    </a>
+    <h1 class="fw-700 mb-0" style="font-size:1.5rem;">
+        <i class="bi bi-people me-2 text-danger"></i>Delete Trainee
+    </h1>
+</div>
+
+<div class="delete-card animate-in mx-auto">
+    <div class="delete-icon">
+        <i class="bi bi-exclamation-triangle"></i>
+    </div>
+    
+    <h3 class="fw-700 text-dark mb-2">Are you sure?</h3>
+    <p class="text-muted mb-4">You are about to delete trainee <strong>@Model.Name</strong>. This will delete their profile, photo, and course results.</p>
+
+    <div class="card detail-card text-start mb-4">
+        <div class="card-body">
+            <div class="d-flex align-items-center gap-3 mb-3 pb-3 border-bottom">
+                @if (!string.IsNullOrEmpty(Model.Image))
+                {
+                    <img src="~/images/uploads/@Model.Image" class="profile-image" alt="@Model.Name" onerror="this.onerror=null; this.parentElement.innerHTML='<div class=&quot;avatar-placeholder&quot;>@Model.Name[0]</div>';" />
+                }
+                else
+                {
+                    <div class="avatar-placeholder">@Model.Name[0]</div>
+                }
+                <div>
+                    <h5 class="fw-700 mb-0 text-dark">@Model.Name</h5>
+                    <span class="text-muted" style="font-size: .8rem;">@(Model.Department?.Name ?? "General Department")</span>
+                </div>
+            </div>
+            
+            <div class="detail-row">
+                <span class="detail-label">Grade / Level</span>
+                <span class="detail-value fw-600">@Model.Grade</span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Address</span>
+                <span class="detail-value">@(string.IsNullOrEmpty(Model.Address) ? "N/A" : Model.Address)</span>
+            </div>
+        </div>
+    </div>
+
+    <form asp-action="Delete" method="post">
+        <input type="hidden" asp-for="Id" />
+        <div class="d-flex gap-2 justify-content-center">
+            <a asp-action="Index" class="btn-back-distinct">Cancel</a>
+            <button type="submit" class="btn btn-danger">
+                <i class="bi bi-trash"></i> Confirm Delete
+            </button>
+        </div>
+    </form>
+</div>

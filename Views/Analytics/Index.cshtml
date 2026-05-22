@@ -1,0 +1,323 @@
+@model Windows_Programing.ViewModels.AnalyticsViewModel
+
+@{
+    ViewData["Title"] = "System Analytics Dashboard";
+}
+
+<!-- Page Header -->
+<div class="page-header d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 border-0 pb-0 bg-transparent mb-4">
+    <div>
+        <h1 class="fw-800 text-dark"><i class="bi bi-bar-chart-line-fill text-primary me-2"></i>System Analytics & Insights</h1>
+        <p class="text-secondary">Comprehensive database aggregation of performance records, department resources, and system intelligence.</p>
+    </div>
+    <div>
+        <a asp-controller="Home" asp-action="Index" class="btn btn-back-distinct">
+            <i class="bi bi-arrow-left"></i> Back to Dashboard
+        </a>
+    </div>
+</div>
+
+<!-- KPI Metrics Deck -->
+<div class="analytics-kpi-grid">
+    <div class="analytics-stat-card card-blue animate-in" style="animation-delay: 0.05s;">
+        <div class="analytics-stat-icon">
+            <i class="bi bi-people-fill"></i>
+        </div>
+        <div class="analytics-stat-details">
+            <div class="analytics-stat-value">@Model.TraineesCount</div>
+            <div class="analytics-stat-label">Total Trainees</div>
+        </div>
+    </div>
+    
+    <div class="analytics-stat-card card-cyan animate-in" style="animation-delay: 0.1s;">
+        <div class="analytics-stat-icon">
+            <i class="bi bi-person-badge-fill"></i>
+        </div>
+        <div class="analytics-stat-details">
+            <div class="analytics-stat-value">@Model.InstructorsCount</div>
+            <div class="analytics-stat-label">Instructors</div>
+        </div>
+    </div>
+
+    <div class="analytics-stat-card card-green animate-in" style="animation-delay: 0.15s;">
+        <div class="analytics-stat-icon">
+            <i class="bi bi-book-fill"></i>
+        </div>
+        <div class="analytics-stat-details">
+            <div class="analytics-stat-value">@Model.CoursesCount</div>
+            <div class="analytics-stat-label">Total Courses</div>
+        </div>
+    </div>
+
+    <div class="analytics-stat-card card-rose animate-in" style="animation-delay: 0.2s;">
+        <div class="analytics-stat-icon">
+            <i class="bi bi-clipboard-check-fill"></i>
+        </div>
+        <div class="analytics-stat-details">
+            <div class="analytics-stat-value">@Model.CourseResultsCount</div>
+            <div class="analytics-stat-label">Course Results</div>
+        </div>
+    </div>
+
+    <div class="analytics-stat-card card-amber animate-in" style="animation-delay: 0.25s;">
+        <div class="analytics-stat-icon">
+            <i class="bi bi-building-fill"></i>
+        </div>
+        <div class="analytics-stat-details">
+            <div class="analytics-stat-value">@Model.DepartmentsCount</div>
+            <div class="analytics-stat-label">Departments</div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4 mb-4">
+    <!-- Global Success Rate Radial Card -->
+    <div class="col-lg-4 animate-in" style="animation-delay: 0.3s;">
+        <div class="pass-rate-card">
+            <h5 class="fw-700 text-dark m-0">Global Passing Rate</h5>
+            <p class="text-muted-sm m-0">Ratio of passing grades across all course results</p>
+            
+            <div class="radial-progress-container">
+                <svg class="radial-progress-svg">
+                    <defs>
+                        <linearGradient id="gradientPassRate" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" stop-color="#3b82f6" />
+                            <stop offset="100%" stop-color="#10b981" />
+                        </linearGradient>
+                    </defs>
+                    <circle class="radial-progress-bg" cx="75" cy="75" r="70" />
+                    <circle class="radial-progress-bar-el" id="passRateCircle" cx="75" cy="75" r="70" />
+                </svg>
+                <div class="radial-progress-value">
+                    <span id="passRateValueText">0%</span>
+                    <span class="radial-progress-subtext">Success</span>
+                </div>
+            </div>
+            
+            <div class="text-muted-sm px-2">
+                A system success threshold is calculated dynamically based on individual course minimum degree requirements.
+            </div>
+        </div>
+    </div>
+
+    <!-- Top Performing Trainees (Crowning Trophies) -->
+    <div class="col-lg-8 animate-in" style="animation-delay: 0.35s;">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-header border-0 bg-transparent pb-0 pt-4 px-4 d-flex justify-content-between align-items-center">
+                <div>
+                    <h5 class="fw-700 text-dark m-0"><i class="bi bi-trophy-fill text-warning me-2"></i>Top Achiever Trainees</h5>
+                    <p class="text-muted-sm m-0 mb-3">Top 5 trainees determined by historical course grade averages.</p>
+                </div>
+            </div>
+            <div class="card-body px-4 pb-4 pt-1">
+                <div class="top-trainees-list">
+                    @{
+                        int rank = 1;
+                    }
+                    @foreach (var trainee in Model.TopTrainees)
+                    {
+                        <div class="top-trainee-item">
+                            <div class="top-trainee-rank rank-@rank">
+                                @if (rank == 1) { <i class="bi bi-trophy-fill"></i> }
+                                else { <span>@rank</span> }
+                            </div>
+                            
+                            @if (!string.IsNullOrEmpty(trainee.Image))
+                            {
+                                <img src="/images/uploads/@trainee.Image" class="top-trainee-avatar" alt="@trainee.TraineeName" onerror="this.src='/images/avatar-default.svg'; this.onerror=null;" />
+                            }
+                            else
+                            {
+                                <div class="top-trainee-avatar bg-primary-light text-primary fw-bold d-flex align-items-center justify-content-center">
+                                    @trainee.TraineeName.Substring(0, Math.Min(2, trainee.TraineeName.Length)).ToUpper()
+                                </div>
+                            }
+
+                            <div class="top-trainee-info">
+                                <h6 class="top-trainee-name">@trainee.TraineeName</h6>
+                                <p class="top-trainee-dept">@trainee.DepartmentName &nbsp;·&nbsp; @trainee.Grade Grade</p>
+                            </div>
+                            
+                            <div class="top-trainee-score">
+                                <span class="top-trainee-score-val">@string.Format("{0:F1}", trainee.AverageScore)%</span>
+                                <span class="top-trainee-score-lbl">Avg Score</span>
+                            </div>
+                        </div>
+                        rank++;
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Course Performance breakdown -->
+<div class="card border-0 shadow-sm mb-4 animate-in" style="animation-delay: 0.4s;">
+    <div class="card-header border-0 bg-transparent pb-0 pt-4 px-4">
+        <h5 class="fw-700 text-dark m-0"><i class="bi bi-journal-bookmark-fill text-primary me-2"></i>Course Performance Directory</h5>
+        <p class="text-secondary text-muted-sm m-0">Detailed breakdown of enrollment outcomes, average scoring benchmarks, and success indices per course.</p>
+    </div>
+    <div class="card-body p-4">
+        <div class="table-responsive table-container border-0 shadow-none">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Course</th>
+                        <th>Department</th>
+                        <th class="text-center">Average Score</th>
+                        <th class="text-center">Enrollment Outcomes</th>
+                        <th class="text-center">Success Index</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var course in Model.CoursePerformances)
+                    {
+                        <tr>
+                            <td>
+                                <span class="fw-700 text-dark">@course.CourseName</span>
+                                <span class="d-block text-muted-sm">Total Value: @course.TotalDegree (Pass Min: @course.MinDegree)</span>
+                            </td>
+                            <td><span class="badge bg-light text-secondary border">@course.DepartmentName</span></td>
+                            <td class="text-center">
+                                <span class="fw-700 text-primary">@string.Format("{0:F1}", course.AverageScore)</span>
+                                <span class="d-block text-muted-sm">out of @course.TotalDegree</span>
+                            </td>
+                            <td class="text-center">
+                                <span class="badge bg-success-subtle text-success border border-success-subtle px-2 py-1">@course.PassCount Passed</span>
+                                <span class="badge bg-danger-subtle text-danger border border-danger-subtle px-2 py-1 ms-1">@course.FailCount Failed</span>
+                            </td>
+                            <td>
+                                <div class="d-flex align-items-center gap-2" style="min-width: 150px;">
+                                    <div class="progress flex-grow-1" style="height: 6px; border-radius: 10px;">
+                                        <div class="progress-bar @(course.PassPercentage >= 75 ? "bg-success" : (course.PassPercentage >= 50 ? "bg-warning" : "bg-danger"))" 
+                                             role="progressbar" 
+                                             style="width: @(course.PassPercentage)%; border-radius: 10px;" 
+                                             aria-valuenow="@(course.PassPercentage)" 
+                                             aria-valuemin="0" 
+                                             aria-valuemax="100"></div>
+                                    </div>
+                                    <span class="fw-700 text-dark" style="font-size: 0.85rem; width: 40px; text-align: right;">@string.Format("{0:N0}", course.PassPercentage)%</span>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4 mb-4">
+    <!-- Department resource allocation -->
+    <div class="col-lg-7 animate-in" style="animation-delay: 0.45s;">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-header border-0 bg-transparent pb-0 pt-4 px-4">
+                <h5 class="fw-700 text-dark m-0"><i class="bi bi-diagram-3-fill text-success me-2"></i>Department Resource & Capacity Allocations</h5>
+                <p class="text-muted-sm m-0 mb-3">Capacity mapping of active Trainees, Course catalogs, Instructors, and average Salary indexes per business unit.</p>
+            </div>
+            <div class="card-body px-4 pb-4 pt-1">
+                <div class="table-responsive table-container border-0 shadow-none">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Department</th>
+                                <th class="text-center">Instructors</th>
+                                <th class="text-center">Trainees</th>
+                                <th class="text-center">Courses</th>
+                                <th class="text-end">Average Salary</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var dept in Model.DepartmentResources)
+                            {
+                                <tr>
+                                    <td>
+                                        <span class="fw-700 text-dark">@dept.DepartmentName</span>
+                                        <span class="d-block text-muted-sm">Manager: @dept.ManagerName</span>
+                                    </td>
+                                    <td class="text-center fw-600 text-secondary">@dept.InstructorCount</td>
+                                    <td class="text-center fw-600 text-secondary">@dept.TraineeCount</td>
+                                    <td class="text-center fw-600 text-secondary">@dept.CourseCount</td>
+                                    <td class="text-end fw-800 text-primary">
+                                        $@string.Format("{0:N0}", dept.AverageSalary)
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Highly Popular Courses list -->
+    <div class="col-lg-5 animate-in" style="animation-delay: 0.5s;">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-header border-0 bg-transparent pb-0 pt-4 px-4">
+                <h5 class="fw-700 text-dark m-0"><i class="bi bi-star-fill text-warning me-2"></i>Most Popular Courses</h5>
+                <p class="text-muted-sm m-0 mb-3">Catalogs attracting the highest volumes of registered active trainees.</p>
+            </div>
+            <div class="card-body px-4 pb-4 pt-1">
+                <div class="top-trainees-list">
+                    @foreach (var c in Model.TopCourses)
+                    {
+                        <div class="top-trainee-item" style="background: white;">
+                            <div class="top-trainee-avatar bg-primary-light text-primary fw-bold d-flex align-items-center justify-content-center" style="border: 1px solid var(--border); border-radius: var(--radius-sm); font-size: 1.15rem;">
+                                <i class="bi bi-award-fill"></i>
+                            </div>
+                            <div class="top-trainee-info">
+                                <h6 class="top-trainee-name">@c.CourseName</h6>
+                                <p class="top-trainee-dept">@c.DepartmentName &nbsp;·&nbsp; @c.Hours hours</p>
+                            </div>
+                            <div class="top-trainee-score">
+                                <span class="top-trainee-score-val text-success">@c.EnrolledCount</span>
+                                <span class="top-trainee-score-lbl">Enrolled</span>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // High-end dynamic animation of the Radial/Circular progress indicators
+        document.addEventListener("DOMContentLoaded", function() {
+            const passRateVal = parseFloat("@Model.GlobalPassRate");
+            const circle = document.getElementById("passRateCircle");
+            const textVal = document.getElementById("passRateValueText");
+            
+            if (circle) {
+                // Circle perimeter is 2 * Math.PI * r = 2 * 3.14159 * 70 = 439.82 (dasharray 440)
+                const radius = 70;
+                const circumference = 2 * Math.PI * radius;
+                
+                // Calculate dash offset representing completion percentage
+                const offset = circumference - (passRateVal / 100) * circumference;
+                
+                // Trigger animation after delay
+                setTimeout(() => {
+                    circle.style.strokeDashoffset = offset;
+                    
+                    // Increment text counter
+                    let count = 0;
+                    const duration = 1200; // ms
+                    const interval = 15;
+                    const step = passRateVal / (duration / interval);
+                    
+                    const counter = setInterval(() => {
+                        count += step;
+                        if (count >= passRateVal) {
+                            textVal.textContent = passRateVal.toFixed(1) + "%";
+                            clearInterval(counter);
+                        } else {
+                            textVal.textContent = count.toFixed(1) + "%";
+                        }
+                    }, interval);
+                }, 300);
+            }
+        });
+    </script>
+}

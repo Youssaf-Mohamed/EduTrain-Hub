@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Training Management System - Manage Departments, Instructors, Courses and Trainees" />
+    <title>@ViewData["Title"] - Training Management System</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+<body>
+    <div class="app-loader" id="appLoader" aria-hidden="true">
+        <div class="loader-mark">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+        <strong>Loading workspace</strong>
+    </div>
+
+    <!-- Mobile Sidebar Backdrop Overlay -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <div class="app-layout" id="appLayout">
+        
+        <!-- Left Sticky Sidebar -->
+        <aside class="sidebar-wrapper">
+            <!-- Sidebar Header -->
+            <div class="sidebar-header">
+                <a class="sidebar-brand-container" asp-controller="Home" asp-action="Index">
+                    <div class="sidebar-brand-logo">
+                        <i class="bi bi-mortarboard-fill"></i>
+                    </div>
+                    <span class="sidebar-brand-text">TrainMS</span>
+                </a>
+                <button class="sidebar-toggle-btn d-none d-lg-flex" id="sidebarToggle" title="Toggle Sidebar">
+                    <i class="bi bi-chevron-left" id="toggleIcon"></i>
+                </button>
+            </div>
+
+            <!-- Profile Badge Glow -->
+            <div class="sidebar-profile">
+                <div class="profile-avatar-container">
+                    <div class="profile-avatar">
+                        YM
+                    </div>
+                    <div class="profile-status-indicator"></div>
+                </div>
+                <div class="profile-details">
+                    <h6 class="profile-name">Youssef Mohamed</h6>
+                    <p class="profile-role">Lead Architect / Admin</p>
+                </div>
+            </div>
+
+            <!-- Scrollable Navigation Menu -->
+            <nav class="sidebar-menu">
+                <div class="menu-heading">General</div>
+                @if (User.HasClaim("permission", Permissions.DashboardView))
+                {
+                    <a class="menu-item-link" asp-controller="Home" asp-action="Index" id="nav-home">
+                        <span class="menu-item-icon"><i class="bi bi-grid-1x2-fill"></i></span>
+                        <span class="menu-item-text">Dashboard</span>
+                    </a>
+                }
+
+                <div class="menu-heading">Advanced Tools</div>
+                @if (User.HasClaim("permission", Permissions.AnalyticsView))
+                {
+                    <a class="menu-item-link" asp-controller="Analytics" asp-action="Index" id="nav-analytics">
+                        <span class="menu-item-icon"><i class="bi bi-bar-chart-line-fill"></i></span>
+                        <span class="menu-item-text">System Analytics</span>
+                    </a>
+                }
+                @if (User.HasClaim("permission", Permissions.OperationsView))
+                {
+                    <a class="menu-item-link" asp-controller="Operations" asp-action="Index" id="nav-operations">
+                        <span class="menu-item-icon"><i class="bi bi-activity"></i></span>
+                        <span class="menu-item-text">Operations Center</span>
+                        <span class="menu-item-badge">New</span>
+                    </a>
+                    <a class="menu-item-link" asp-controller="Hub" asp-action="Index" id="nav-hub">
+                        <span class="menu-item-icon"><i class="bi bi-cpu-fill"></i></span>
+                        <span class="menu-item-text">Grade Simulator & Search</span>
+                    </a>
+                }
+
+                <div class="menu-heading">Core Management</div>
+                @if (User.HasClaim("permission", Permissions.DepartmentsManage))
+                {
+                    <a class="menu-item-link" asp-controller="Department" asp-action="Index" id="nav-dept">
+                        <span class="menu-item-icon"><i class="bi bi-building-fill"></i></span>
+                        <span class="menu-item-text">Departments</span>
+                    </a>
+                }
+                @if (User.HasClaim("permission", Permissions.InstructorsManage))
+                {
+                    <a class="menu-item-link" asp-controller="Instructor" asp-action="Index" id="nav-instr">
+                        <span class="menu-item-icon"><i class="bi bi-person-badge-fill"></i></span>
+                        <span class="menu-item-text">Instructors</span>
+                    </a>
+                }
+                @if (User.HasClaim("permission", Permissions.CoursesManage))
+                {
+                    <a class="menu-item-link" asp-controller="Course" asp-action="Index" id="nav-course">
+                        <span class="menu-item-icon"><i class="bi bi-book-fill"></i></span>
+                        <span class="menu-item-text">Courses</span>
+                    </a>
+                }
+                @if (User.HasClaim("permission", Permissions.TraineesManage))
+                {
+                    <a class="menu-item-link" asp-controller="Trainee" asp-action="Index" id="nav-trainee">
+                        <span class="menu-item-icon"><i class="bi bi-people-fill"></i></span>
+                        <span class="menu-item-text">Trainees</span>
+                    </a>
+                }
+                @if (User.HasClaim("permission", Permissions.ResultsManage))
+                {
+                    <a class="menu-item-link" asp-controller="CourseResult" asp-action="Index" id="nav-result">
+                        <span class="menu-item-icon"><i class="bi bi-clipboard-data-fill"></i></span>
+                        <span class="menu-item-text">Course Results</span>
+                    </a>
+                }
+
+                @if (User.HasClaim("permission", Permissions.UsersManage) || User.HasClaim("permission", Permissions.RolesManage))
+                {
+                    <div class="menu-heading">Security</div>
+                    @if (User.HasClaim("permission", Permissions.UsersManage))
+                    {
+                        <a class="menu-item-link" asp-controller="Security" asp-action="Users" id="nav-users">
+                            <span class="menu-item-icon"><i class="bi bi-person-lock"></i></span>
+                            <span class="menu-item-text">Users</span>
+                        </a>
+                    }
+                    @if (User.HasClaim("permission", Permissions.RolesManage))
+                    {
+                        <a class="menu-item-link" asp-controller="Security" asp-action="Roles" id="nav-roles">
+                            <span class="menu-item-icon"><i class="bi bi-shield-lock"></i></span>
+                            <span class="menu-item-text">Roles & Permissions</span>
+                        </a>
+                    }
+                }
+            </nav>
+
+            <!-- Sidebar Footer -->
+            <div class="sidebar-footer">
+                <div class="sidebar-health">
+                    <span class="health-dot"></span>
+                    <span class="sidebar-footer-text">System Online</span>
+                </div>
+                <span class="sidebar-footer-text sidebar-version">TrainMS v2.2.0</span>
+            </div>
+        </aside>
+
+        <!-- Right-Side Content Canvas -->
+        <div class="content-wrapper">
+            
+            <!-- Translucent Top Toolbar -->
+            <header class="top-bar">
+                <div class="top-bar-left">
+                    <button class="mobile-nav-toggle d-lg-none" id="mobileSidebarToggle" aria-label="Toggle Sidebar Menu">
+                        <i class="bi bi-list"></i>
+                    </button>
+                    <button class="top-bar-toggle d-none d-lg-flex" id="topBarToggle" title="Collapse Sidebar Menu">
+                        <i class="bi bi-indent"></i>
+                    </button>
+                    <h5 class="top-bar-title d-none d-sm-inline-block">Training Management Console</h5>
+                </div>
+                <div class="top-bar-right">
+                    <div class="developer-signature ms-2">
+                        <span class="sig-badge">
+                            <i class="bi bi-person-fill-check me-1 text-primary animate-pulse"></i>
+                            @User.Identity?.Name
+                        </span>
+                    </div>
+                    <form asp-controller="Account" asp-action="Logout" method="post" class="m-0">
+                        <button type="submit" class="btn btn-sm btn-outline-secondary">
+                            <i class="bi bi-box-arrow-right"></i> Logout
+                        </button>
+                    </form>
+                </div>
+            </header>
+
+            <!-- Main Workspace -->
+            <main role="main" class="main-workspace animate-in">
+                @if (TempData["SuccessMessage"] is string successMessage)
+                {
+                    <div class="alert alert-success alert-dismissible fade show app-alert" role="alert">
+                        <i class="bi bi-check-circle-fill me-2"></i>@successMessage
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                }
+                @if (TempData["ErrorMessage"] is string errorMessage)
+                {
+                    <div class="alert alert-danger alert-dismissible fade show app-alert" role="alert">
+                        <i class="bi bi-exclamation-triangle-fill me-2"></i>@errorMessage
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                }
+                @RenderBody()
+            </main>
+
+            <!-- Footer -->
+            <footer class="site-footer">
+                <div class="container-fluid px-4 d-flex flex-column flex-md-row justify-content-between align-items-center gap-3">
+                    <span>
+                        &copy; @DateTime.Now.Year &nbsp;-&nbsp; <strong>Training Management System</strong>
+                        &nbsp;-&nbsp; Built with ASP.NET Core MVC
+                    </span>
+                    <div class="developer-signature">
+                        <span class="sig-label">Created by</span>
+                        <span class="sig-badge">
+                            <i class="bi bi-person-fill-check me-1 text-primary"></i>
+                            Youssef Mohamed
+                        </span>
+                    </div>
+                </div>
+            </footer>
+        </div>
+    </div>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+
+    <script>
+        // High-end Sticky Sidebar collapsing/drawer script
+        document.addEventListener("DOMContentLoaded", function() {
+            const appLayout = document.getElementById("appLayout");
+            const sidebarToggle = document.getElementById("sidebarToggle");
+            const topBarToggle = document.getElementById("topBarToggle");
+            const toggleIcon = document.getElementById("toggleIcon");
+            const mobileSidebarToggle = document.getElementById("mobileSidebarToggle");
+            const sidebarOverlay = document.getElementById("sidebarOverlay");
+            
+            // Check for saved sidebar collapse preference
+            if (localStorage.getItem("sidebarCollapsed") === "true") {
+                appLayout.classList.add("sidebar-collapsed");
+                updateToggleIcon(true);
+            }
+
+            function updateToggleIcon(isCollapsed) {
+                if (toggleIcon) {
+                    if (isCollapsed) {
+                        toggleIcon.classList.remove("bi-chevron-left");
+                        toggleIcon.classList.add("bi-chevron-right");
+                    } else {
+                        toggleIcon.classList.remove("bi-chevron-right");
+                        toggleIcon.classList.add("bi-chevron-left");
+                    }
+                }
+            }
+
+            function toggleSidebar() {
+                const isCollapsed = appLayout.classList.toggle("sidebar-collapsed");
+                localStorage.setItem("sidebarCollapsed", isCollapsed);
+                updateToggleIcon(isCollapsed);
+            }
+
+            if (sidebarToggle) sidebarToggle.addEventListener("click", toggleSidebar);
+            if (topBarToggle) topBarToggle.addEventListener("click", toggleSidebar);
+
+            // Mobile sliding sidebar controls
+            if (mobileSidebarToggle) {
+                mobileSidebarToggle.addEventListener("click", function() {
+                    document.body.classList.add("sidebar-mobile-active");
+                });
+            }
+
+            if (sidebarOverlay) {
+                sidebarOverlay.addEventListener("click", function() {
+                    document.body.classList.remove("sidebar-mobile-active");
+                });
+            }
+
+            // Close mobile menu on link click
+            const menuLinks = document.querySelectorAll(".menu-item-link");
+            menuLinks.forEach(link => {
+                link.addEventListener("click", function() {
+                    document.body.classList.remove("sidebar-mobile-active");
+                });
+            });
+
+            // Highlight active nav link based on current URL path
+            const path = window.location.pathname.toLowerCase();
+            const map = {
+                '/home': 'nav-home',
+                '/analytics': 'nav-analytics',
+                '/operations': 'nav-operations',
+                '/hub': 'nav-hub',
+                '/security/users': 'nav-users',
+                '/security/createuser': 'nav-users',
+                '/security/edituser': 'nav-users',
+                '/security/roles': 'nav-roles',
+                '/department': 'nav-dept',
+                '/instructor': 'nav-instr',
+                '/courseresult': 'nav-result',
+                '/course': 'nav-course',
+                '/trainee': 'nav-trainee'
+            };
+            
+            // Remove active class from all links first
+            document.querySelectorAll(".menu-item-link").forEach(el => el.classList.remove("active"));
+            
+            // Default home dashboard
+            if (path === '/' || path === '/home/index') {
+                const el = document.getElementById('nav-home');
+                if (el) el.classList.add('active');
+            } else {
+                let matched = false;
+                for (const [key, id] of Object.entries(map)) {
+                    if (path.startsWith(key)) {
+                        const el = document.getElementById(id);
+                        if (el) {
+                            el.classList.add('active');
+                            matched = true;
+                        }
+                        break;
+                    }
+                }
+                // Fallback for general matches
+                if (!matched) {
+                    if (path.includes('department')) document.getElementById('nav-dept')?.classList.add('active');
+                    else if (path.includes('instructor')) document.getElementById('nav-instr')?.classList.add('active');
+                    else if (path.includes('course') && !path.includes('courseresult')) document.getElementById('nav-course')?.classList.add('active');
+                    else if (path.includes('trainee')) document.getElementById('nav-trainee')?.classList.add('active');
+                    else if (path.includes('courseresult')) document.getElementById('nav-result')?.classList.add('active');
+                }
+            }
+        });
+    </script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

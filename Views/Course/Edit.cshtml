@@ -1,0 +1,69 @@
+@model Windows_Programing.Models.Course
+@{
+    ViewData["Title"] = "Edit Course";
+}
+
+<div class="d-flex align-items-center gap-2 mb-4">
+    <a asp-action="Index" class="btn-back-distinct">
+        <i class="bi bi-arrow-left-short"></i> Back
+    </a>
+    <h1 class="fw-700 mb-0" style="font-size:1.5rem;">
+        <i class="bi bi-book me-2 text-primary"></i>Edit Course
+    </h1>
+</div>
+
+<div class="form-wrapper animate-in mx-auto">
+    <h5 class="fw-700 mb-3 text-dark border-bottom pb-2">
+        <i class="bi bi-pencil-square me-1 text-warning"></i>Update Course Details
+    </h5>
+
+    <form asp-action="Edit" method="post">
+        <div asp-validation-summary="ModelOnly" class="text-danger mb-3" style="font-size: .85rem;"></div>
+        <input type="hidden" asp-for="Id" />
+
+        <div class="mb-3">
+            <label asp-for="Name" class="form-label"></label>
+            <input asp-for="Name" class="form-control" />
+            <span asp-validation-for="Name" class="text-danger mt-1 d-block" style="font-size: .8rem;"></span>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label asp-for="Hours" class="form-label"></label>
+                <input asp-for="Hours" type="number" class="form-control" />
+                <span asp-validation-for="Hours" class="text-danger mt-1 d-block" style="font-size: .8rem;"></span>
+            </div>
+
+            <div class="col-md-6 mb-3">
+                <label asp-for="Dept_Id" class="form-label">Department</label>
+                <select asp-for="Dept_Id" class="form-select" asp-items="ViewBag.Dept_Id"></select>
+                <span asp-validation-for="Dept_Id" class="text-danger mt-1 d-block" style="font-size: .8rem;"></span>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6 mb-4">
+                <label asp-for="Degree" class="form-label"></label>
+                <input asp-for="Degree" type="number" class="form-control" />
+                <span asp-validation-for="Degree" class="text-danger mt-1 d-block" style="font-size: .8rem;"></span>
+            </div>
+
+            <div class="col-md-6 mb-4">
+                <label asp-for="MinDegree" class="form-label"></label>
+                <input asp-for="MinDegree" type="number" class="form-control" />
+                <span asp-validation-for="MinDegree" class="text-danger mt-1 d-block" style="font-size: .8rem;"></span>
+            </div>
+        </div>
+
+        <div class="d-flex gap-2 justify-content-end border-top pt-3">
+            <a asp-action="Index" class="btn-back-distinct">Cancel</a>
+            <button type="submit" class="btn btn-warning text-white">
+                <i class="bi bi-save"></i> Save Changes
+            </button>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

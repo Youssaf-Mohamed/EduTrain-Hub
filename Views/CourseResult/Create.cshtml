@@ -1,0 +1,56 @@
+@model Windows_Programing.Models.CourseResult
+@{
+    ViewData["Title"] = "Record Grade";
+}
+
+<div class="d-flex align-items-center gap-2 mb-4">
+    <a asp-action="Index" class="btn-back-distinct">
+        <i class="bi bi-arrow-left-short"></i> Back
+    </a>
+    <h1 class="fw-700 mb-0" style="font-size:1.5rem;">
+        <i class="bi bi-award me-2 text-primary"></i>Record Course Grade
+    </h1>
+</div>
+
+<div class="form-wrapper animate-in mx-auto">
+    <h5 class="fw-700 mb-3 text-dark border-bottom pb-2">
+        <i class="bi bi-info-circle me-1 text-primary"></i>Grade Details
+    </h5>
+
+    <form asp-action="Create" method="post">
+        <div asp-validation-summary="ModelOnly" class="text-danger mb-3" style="font-size: .85rem;"></div>
+
+        <div class="mb-3">
+            <label asp-for="Trainee_Id" class="form-label">Trainee</label>
+            <select asp-for="Trainee_Id" class="form-select" asp-items="ViewBag.Trainee_Id">
+                <option value="">-- Select Trainee --</option>
+            </select>
+            <span asp-validation-for="Trainee_Id" class="text-danger mt-1 d-block" style="font-size: .8rem;"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Crs_Id" class="form-label">Course</label>
+            <select asp-for="Crs_Id" class="form-select" asp-items="ViewBag.Crs_Id">
+                <option value="">-- Select Course --</option>
+            </select>
+            <span asp-validation-for="Crs_Id" class="text-danger mt-1 d-block" style="font-size: .8rem;"></span>
+        </div>
+
+        <div class="mb-4">
+            <label asp-for="Degree" class="form-label">Obtained Score / Degree</label>
+            <input asp-for="Degree" type="number" class="form-control" placeholder="e.g. 85" />
+            <span asp-validation-for="Degree" class="text-danger mt-1 d-block" style="font-size: .8rem;"></span>
+        </div>
+
+        <div class="d-flex gap-2 justify-content-end border-top pt-3">
+            <a asp-action="Index" class="btn-back-distinct">Cancel</a>
+            <button type="submit" class="btn btn-primary">
+                <i class="bi bi-check-lg"></i> Save Grade
+            </button>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

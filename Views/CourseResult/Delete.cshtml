@@ -1,0 +1,49 @@
+@model Windows_Programing.Models.CourseResult
+@{
+    ViewData["Title"] = "Delete Result";
+}
+
+<div class="d-flex align-items-center gap-2 mb-4">
+    <a asp-action="Index" class="btn-back-distinct">
+        <i class="bi bi-arrow-left-short"></i> Back
+    </a>
+    <h1 class="fw-700 mb-0" style="font-size:1.5rem;">
+        <i class="bi bi-award me-2 text-danger"></i>Delete Grade
+    </h1>
+</div>
+
+<div class="delete-card animate-in mx-auto">
+    <div class="delete-icon">
+        <i class="bi bi-exclamation-triangle"></i>
+    </div>
+    
+    <h3 class="fw-700 text-dark mb-2">Are you sure?</h3>
+    <p class="text-muted mb-4">You are about to delete the course result for trainee <strong>@(Model.Trainee?.Name ?? "Trainee")</strong> in course <strong>@(Model.Course?.Name ?? "Course")</strong>. This action is permanent.</p>
+
+    <div class="card detail-card text-start mb-4">
+        <div class="card-body">
+            <div class="detail-row">
+                <span class="detail-label">Trainee Name</span>
+                <span class="detail-value fw-600">@(Model.Trainee?.Name ?? "N/A")</span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Course Name</span>
+                <span class="detail-value">@(Model.Course?.Name ?? "N/A")</span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Score / Total</span>
+                <span class="detail-value fw-600">@Model.Degree / @(Model.Course?.Degree ?? 100) points</span>
+            </div>
+        </div>
+    </div>
+
+    <form asp-action="Delete" method="post">
+        <input type="hidden" asp-for="Id" />
+        <div class="d-flex gap-2 justify-content-center">
+            <a asp-action="Index" class="btn-back-distinct">Cancel</a>
+            <button type="submit" class="btn btn-danger">
+                <i class="bi bi-trash"></i> Confirm Delete
+            </button>
+        </div>
+    </form>
+</div>

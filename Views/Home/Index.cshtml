@@ -1,0 +1,177 @@
+@model Windows_Programing.ViewModels.DashboardViewModel
+@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<!-- Hero Section -->
+<div class="hero-section animate-in">
+    <div class="container px-4">
+        <div class="row align-items-center">
+            <div class="col-lg-8">
+                <p class="text-white-50 mb-2 fw-500" style="font-size:.85rem;letter-spacing:.08em;text-transform:uppercase;">
+                    <i class="bi bi-mortarboard me-2"></i>Training Management System
+                </p>
+                <h1 class="hero-title">Welcome to TrainMS</h1>
+                <p class="hero-subtitle">
+                    A complete platform to manage departments, instructors, courses and trainees in one place.
+                </p>
+                <div class="d-flex flex-wrap gap-2">
+                    <a asp-controller="Instructor" asp-action="Index" class="btn btn-light fw-600">
+                        <i class="bi bi-people"></i> Browse Instructors
+                    </a>
+                    <a asp-controller="Department" asp-action="Create" class="btn btn-outline-light fw-600">
+                        <i class="bi bi-plus-circle"></i> Add Department
+                    </a>
+                </div>
+            </div>
+            <div class="col-lg-4 d-none d-lg-flex justify-content-end">
+                <i class="bi bi-mortarboard-fill" style="font-size:8rem;opacity:.15;color:white;"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Stats Row -->
+<div class="row g-3 mb-4 animate-in" style="animation-delay:.1s">
+    <div class="col-sm-6 col-xl">
+        <div class="stat-card stat-blue">
+            <div class="stat-icon"><i class="bi bi-building"></i></div>
+            <div class="stat-value">@Model.DepartmentsCount</div>
+            <div class="stat-label">Departments</div>
+        </div>
+    </div>
+    <div class="col-sm-6 col-xl">
+        <div class="stat-card stat-amber">
+            <div class="stat-icon"><i class="bi bi-book"></i></div>
+            <div class="stat-value">@Model.CoursesCount</div>
+            <div class="stat-label">Courses</div>
+        </div>
+    </div>
+    <div class="col-sm-6 col-xl">
+        <div class="stat-card stat-green">
+            <div class="stat-icon"><i class="bi bi-person-workspace"></i></div>
+            <div class="stat-value">@Model.InstructorsCount</div>
+            <div class="stat-label">Instructors</div>
+        </div>
+    </div>
+    <div class="col-sm-6 col-xl">
+        <div class="stat-card stat-cyan">
+            <div class="stat-icon"><i class="bi bi-people"></i></div>
+            <div class="stat-value">@Model.TraineesCount</div>
+            <div class="stat-label">Trainees</div>
+        </div>
+    </div>
+    <div class="col-sm-6 col-xl">
+        <div class="stat-card stat-rose">
+            <div class="stat-icon"><i class="bi bi-clipboard-data"></i></div>
+            <div class="stat-value">@Model.CourseResultsCount</div>
+            <div class="stat-label">Results</div>
+        </div>
+    </div>
+</div>
+
+<!-- Quick Navigation -->
+<h2 class="section-title animate-in" style="animation-delay:.15s">
+    <i class="bi bi-grid-3x3-gap me-2 text-primary"></i>Quick Navigation
+</h2>
+<div class="row g-3 animate-in" style="animation-delay:.2s">
+    <div class="col-sm-6 col-lg-4">
+        <a asp-controller="Department" asp-action="Index" class="nav-card">
+            <div class="nav-card-icon" style="background:#eff6ff;color:#3b82f6;">
+                <i class="bi bi-building"></i>
+            </div>
+            <div>
+                <div class="nav-card-title">Departments</div>
+                <div class="nav-card-desc">Manage all departments &amp; managers</div>
+            </div>
+        </a>
+    </div>
+    <div class="col-sm-6 col-lg-4">
+        <a asp-controller="Instructor" asp-action="Index" class="nav-card">
+            <div class="nav-card-icon" style="background:#f0fdf4;color:#22c55e;">
+                <i class="bi bi-person-workspace"></i>
+            </div>
+            <div>
+                <div class="nav-card-title">Instructors</div>
+                <div class="nav-card-desc">View and search instructors</div>
+            </div>
+        </a>
+    </div>
+    <div class="col-sm-6 col-lg-4">
+        <a asp-controller="Course" asp-action="Index" class="nav-card">
+            <div class="nav-card-icon" style="background:#fffbeb;color:#f59e0b;">
+                <i class="bi bi-book"></i>
+            </div>
+            <div>
+                <div class="nav-card-title">Courses</div>
+                <div class="nav-card-desc">Manage courses, hours &amp; degrees</div>
+            </div>
+        </a>
+    </div>
+    <div class="col-sm-6 col-lg-4">
+        <a asp-controller="Trainee" asp-action="Index" class="nav-card">
+            <div class="nav-card-icon" style="background:#ecfeff;color:#06b6d4;">
+                <i class="bi bi-people"></i>
+            </div>
+            <div>
+                <div class="nav-card-title">Trainees</div>
+                <div class="nav-card-desc">Browse all registered trainees</div>
+            </div>
+        </a>
+    </div>
+    <div class="col-sm-6 col-lg-4">
+        <a asp-controller="CourseResult" asp-action="Index" class="nav-card">
+            <div class="nav-card-icon" style="background:#fff1f2;color:#f43f5e;">
+                <i class="bi bi-clipboard-data"></i>
+            </div>
+            <div>
+                <div class="nav-card-title">Course Results</div>
+                <div class="nav-card-desc">Track trainee grades and results</div>
+            </div>
+        </a>
+    </div>
+    <div class="col-sm-6 col-lg-4">
+        <a asp-controller="Analytics" asp-action="Index" class="nav-card">
+            <div class="nav-card-icon" style="background:#f5f3ff;color:#8b5cf6;">
+                <i class="bi bi-bar-chart-line-fill"></i>
+            </div>
+            <div>
+                <div class="nav-card-title">System Analytics</div>
+                <div class="nav-card-desc">Real-time statistics &amp; performance</div>
+            </div>
+        </a>
+    </div>
+    <div class="col-sm-6 col-lg-4">
+        <a asp-controller="Operations" asp-action="Index" class="nav-card">
+            <div class="nav-card-icon" style="background:#ecfdf5;color:#10b981;">
+                <i class="bi bi-activity"></i>
+            </div>
+            <div>
+                <div class="nav-card-title">Operations Center</div>
+                <div class="nav-card-desc">Risk signals, coverage, and recent grades</div>
+            </div>
+        </a>
+    </div>
+    <div class="col-sm-6 col-lg-4">
+        <a asp-controller="Hub" asp-action="Index" class="nav-card">
+            <div class="nav-card-icon" style="background:#fdf2f8;color:#db2777;">
+                <i class="bi bi-cpu-fill"></i>
+            </div>
+            <div>
+                <div class="nav-card-title">Simulator &amp; Search</div>
+                <div class="nav-card-desc">Interactive grades &amp; registry queries</div>
+            </div>
+        </a>
+    </div>
+    <div class="col-sm-6 col-lg-4">
+        <a asp-controller="Instructor" asp-action="Create" class="nav-card">
+            <div class="nav-card-icon" style="background:#f1f5f9;color:#475569;">
+                <i class="bi bi-plus-circle"></i>
+            </div>
+            <div>
+                <div class="nav-card-title">Add Instructor</div>
+                <div class="nav-card-desc">Register a new instructor</div>
+            </div>
+        </a>
+    </div>
+</div>

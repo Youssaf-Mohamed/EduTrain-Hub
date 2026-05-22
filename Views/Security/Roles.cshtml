@@ -1,0 +1,63 @@
+@model Windows_Programing.ViewModels.RolePermissionsViewModel
+
+@{
+    ViewData["Title"] = "Roles & Permissions";
+    var groups = Model.Permissions.GroupBy(p => p.Group).OrderBy(g => g.Key);
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h1 class="fw-800 mb-1" style="font-size:1.6rem;"><i class="bi bi-shield-lock me-2 text-primary"></i>Roles & Permissions</h1>
+        <p class="text-muted mb-0" style="font-size:.875rem;">Control what each role can view and manage across the system.</p>
+    </div>
+    <a asp-action="Users" class="btn btn-back-distinct">
+        <i class="bi bi-arrow-left"></i> Back to Users
+    </a>
+</div>
+
+<div class="row g-4">
+    <div class="col-lg-3">
+        <div class="security-role-list animate-in">
+            @foreach (var role in Model.Roles)
+            {
+                <a asp-action="Roles" asp-route-id="@role.Id" class="security-role-link @(role.Id == Model.RoleId ? "active" : "")">
+                    <strong>@role.Name</strong>
+                    <small>@role.Description</small>
+                </a>
+            }
+        </div>
+    </div>
+    <div class="col-lg-9">
+        <form asp-action="Roles" method="post" class="security-permission-panel animate-in">
+            <input type="hidden" asp-for="RoleId" />
+            <div class="ops-panel-header">
+                <div>
+                    <h2>@Model.RoleName</h2>
+                    <p>@Model.Description</p>
+                </div>
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-save"></i> Save Permissions
+                </button>
+            </div>
+
+            <div class="permission-grid">
+                @foreach (var group in groups)
+                {
+                    <section class="permission-group">
+                        <h3>@group.Key</h3>
+                        @foreach (var permission in group)
+                        {
+                            <label class="permission-item">
+                                <input type="checkbox" name="selectedPermissionIds" value="@permission.PermissionId" checked="@permission.IsSelected" />
+                                <span>
+                                    <strong>@permission.DisplayName</strong>
+                                    <small>@permission.Key</small>
+                                </span>
+                            </label>
+                        }
+                    </section>
+                }
+            </div>
+        </form>
+    </div>
+</div>

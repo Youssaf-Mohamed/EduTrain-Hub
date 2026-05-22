@@ -1,0 +1,153 @@
+@model Windows_Programing.ViewModels.OperationsViewModel
+
+@{
+    ViewData["Title"] = "Operations Center";
+}
+
+<div class="ops-header animate-in">
+    <div>
+        <span class="ops-eyebrow"><i class="bi bi-activity"></i> Live Operations</span>
+        <h1>Operations Center</h1>
+        <p>Follow risk signals, course coverage, and the latest recorded grades from one focused workspace.</p>
+    </div>
+    <div class="ops-actions">
+        <a asp-controller="CourseResult" asp-action="Create" class="btn btn-primary">
+            <i class="bi bi-plus-circle"></i> Record Grade
+        </a>
+        <a asp-controller="Hub" asp-action="Index" class="btn btn-outline-secondary">
+            <i class="bi bi-search"></i> Open Search Hub
+        </a>
+    </div>
+</div>
+
+<div class="ops-kpi-grid animate-stagger">
+    <div class="ops-kpi">
+        <span class="ops-kpi-icon success"><i class="bi bi-check2-circle"></i></span>
+        <span class="ops-kpi-value">@Model.PassingResultsCount</span>
+        <span class="ops-kpi-label">Passed Results</span>
+    </div>
+    <div class="ops-kpi">
+        <span class="ops-kpi-icon danger"><i class="bi bi-exclamation-circle"></i></span>
+        <span class="ops-kpi-value">@Model.FailingResultsCount</span>
+        <span class="ops-kpi-label">Needs Attention</span>
+    </div>
+    <div class="ops-kpi">
+        <span class="ops-kpi-icon warning"><i class="bi bi-person-slash"></i></span>
+        <span class="ops-kpi-value">@Model.CoursesWithoutInstructorsCount</span>
+        <span class="ops-kpi-label">Courses Without Instructor</span>
+    </div>
+    <div class="ops-kpi">
+        <span class="ops-kpi-icon info"><i class="bi bi-graph-up-arrow"></i></span>
+        <span class="ops-kpi-value">@Model.AverageScore.ToString("0.0")</span>
+        <span class="ops-kpi-label">Average Score</span>
+    </div>
+</div>
+
+<div class="row g-4 mb-4">
+    <div class="col-xl-5">
+        <section class="ops-panel h-100 animate-in" style="animation-delay:.08s">
+            <div class="ops-panel-header">
+                <div>
+                    <h2>At-Risk Trainees</h2>
+                    <p>Students with failed course records.</p>
+                </div>
+                <span class="ops-chip">@Model.AtRiskTrainees.Count tracked</span>
+            </div>
+
+            @if (!Model.AtRiskTrainees.Any())
+            {
+                <div class="ops-empty">
+                    <i class="bi bi-shield-check"></i>
+                    <strong>No risk signals</strong>
+                    <span>All recorded trainees are currently passing their course requirements.</span>
+                </div>
+            }
+            else
+            {
+                <div class="ops-list">
+                    @foreach (var trainee in Model.AtRiskTrainees)
+                    {
+                        <a asp-controller="Trainee" asp-action="Details" asp-route-id="@trainee.TraineeId" class="ops-list-item">
+                            <span class="ops-avatar">@trainee.TraineeName[0]</span>
+                            <span class="ops-list-main">
+                                <strong>@trainee.TraineeName</strong>
+                                <small>@trainee.DepartmentName</small>
+                            </span>
+                            <span class="ops-list-meta danger">
+                                @trainee.FailedCoursesCount fail
+                            </span>
+                        </a>
+                    }
+                </div>
+            }
+        </section>
+    </div>
+
+    <div class="col-xl-7">
+        <section class="ops-panel h-100 animate-in" style="animation-delay:.14s">
+            <div class="ops-panel-header">
+                <div>
+                    <h2>Recent Grade Activity</h2>
+                    <p>Latest results recorded in the system.</p>
+                </div>
+                <a asp-controller="CourseResult" asp-action="Index" class="btn btn-sm btn-action-details">
+                    <i class="bi bi-arrow-right"></i> All Results
+                </a>
+            </div>
+
+            <div class="ops-timeline">
+                @foreach (var result in Model.RecentResults)
+                {
+                    var percentage = result.CourseDegree > 0 ? (double)result.Degree / result.CourseDegree * 100 : 0;
+                    <a asp-controller="CourseResult" asp-action="Details" asp-route-id="@result.ResultId" class="ops-timeline-item">
+                        <span class="ops-dot @(result.IsPassed ? "success" : "danger")"></span>
+                        <span class="ops-timeline-main">
+                            <strong>@result.TraineeName</strong>
+                            <small>@result.CourseName</small>
+                        </span>
+                        <span class="ops-score">
+                            @result.Degree / @result.CourseDegree
+                            <small>@percentage.ToString("0")%</small>
+                        </span>
+                    </a>
+                }
+            </div>
+        </section>
+    </div>
+</div>
+
+<section class="ops-panel animate-in" style="animation-delay:.2s">
+    <div class="ops-panel-header">
+        <div>
+            <h2>Course Coverage</h2>
+            <p>Instructor allocation and result activity by course.</p>
+        </div>
+        <span class="ops-chip">@Model.TraineesWithoutResultsCount trainees without results</span>
+    </div>
+
+    <div class="coverage-grid">
+        @foreach (var course in Model.CourseCoverage)
+        {
+            var hasInstructor = course.InstructorCount > 0;
+            <a asp-controller="Course" asp-action="Details" asp-route-id="@course.CourseId" class="coverage-row">
+                <span class="coverage-status @(hasInstructor ? "covered" : "open")"></span>
+                <span class="coverage-main">
+                    <strong>@course.CourseName</strong>
+                    <small>@course.DepartmentName</small>
+                </span>
+                <span class="coverage-stat">
+                    <strong>@course.InstructorCount</strong>
+                    <small>Instructors</small>
+                </span>
+                <span class="coverage-stat">
+                    <strong>@course.ResultCount</strong>
+                    <small>Results</small>
+                </span>
+                <span class="coverage-stat">
+                    <strong>@course.Hours</strong>
+                    <small>Hours</small>
+                </span>
+            </a>
+        }
+    </div>
+</section>

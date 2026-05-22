@@ -1,0 +1,67 @@
+@model Windows_Programing.Models.CourseResult
+@{
+    ViewData["Title"] = "Result Details";
+    bool isPassed = Model.Course != null && Model.Degree >= Model.Course.MinDegree;
+}
+
+<div class="d-flex align-items-center gap-2 mb-4">
+    <a asp-action="Index" class="btn-back-distinct">
+        <i class="bi bi-arrow-left-short"></i> Back
+    </a>
+    <h1 class="fw-700 mb-0" style="font-size:1.5rem;">
+        <i class="bi bi-award me-2 text-primary"></i>Grade Details
+    </h1>
+</div>
+
+<div class="row g-4 animate-in">
+    <div class="col-lg-6 mx-auto">
+        <div class="card detail-card">
+            <div class="card-header d-flex align-items-center justify-content-between">
+                <span><i class="bi bi-info-circle text-primary me-2"></i>Trainee Performance Card</span>
+                @if (isPassed)
+                {
+                    <span class="badge bg-success-subtle text-success border border-success-subtle px-2 py-1" style="font-size: .75rem;">
+                        <i class="bi bi-check-circle me-1"></i>Passed
+                    </span>
+                }
+                else
+                {
+                    <span class="badge bg-danger-subtle text-danger border border-danger-subtle px-2 py-1" style="font-size: .75rem;">
+                        <i class="bi bi-x-circle me-1"></i>Failed
+                    </span>
+                }
+            </div>
+            <div class="card-body">
+                <div class="detail-row">
+                    <span class="detail-label">Trainee Name</span>
+                    <span class="detail-value fw-600">@(Model.Trainee?.Name ?? "N/A")</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Course Name</span>
+                    <span class="detail-value">@(Model.Course?.Name ?? "N/A")</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Score Achieved</span>
+                    <span class="detail-value fw-800 text-primary" style="font-size: 1.1rem;">@Model.Degree / @(Model.Course?.Degree ?? 100) pts</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Required Passing</span>
+                    <span class="detail-value text-danger">@(Model.Course?.MinDegree ?? 0) pts</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Department</span>
+                    <span class="detail-value">@(Model.Trainee?.Department?.Name ?? Model.Course?.Department?.Name ?? "N/A")</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="d-flex gap-2 justify-content-center mt-4">
+    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning text-white">
+        <i class="bi bi-pencil"></i> Edit Grade
+    </a>
+    <a asp-action="Index" class="btn-back-distinct">
+        <i class="bi-list-ul"></i> All Results
+    </a>
+</div>

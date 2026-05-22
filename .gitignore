@@ -1,0 +1,42 @@
+# Visual Studio & .NET GitIgnore Template
+
+## Build outputs
+bin/
+obj/
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+bld/
+[Bb]in/
+[Oo]bj/
+
+## User-specific files
+*.rsuser
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+## Database & SQLite files
+*.db
+*.db-shm
+*.db-wal
+*.sqlite
+*.sqlite3
+
+## Visual Studio cache and settings
+.vs/
+.vs*
+.idea/
+.vscode/
+
+## Publish files
+publish/
+*.pubxml
+*.pubxml.user
+
+## OS-specific files
+.DS_Store
+Thumbs.db
+desktop.ini

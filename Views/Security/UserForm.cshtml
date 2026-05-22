@@ -1,0 +1,63 @@
+@model Windows_Programing.ViewModels.UserFormViewModel
+
+@{
+    var isEdit = Model.Id.HasValue;
+    ViewData["Title"] = isEdit ? "Edit User" : "New User";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h1 class="fw-800 mb-1" style="font-size:1.6rem;"><i class="bi bi-person-gear me-2 text-primary"></i>@ViewData["Title"]</h1>
+        <p class="text-muted mb-0" style="font-size:.875rem;">Assign a role and control whether this account can sign in.</p>
+    </div>
+    <a asp-action="Users" class="btn btn-back-distinct">
+        <i class="bi bi-arrow-left"></i> Back to Users
+    </a>
+</div>
+
+<div class="form-wrapper animate-in">
+    <form asp-action="@(isEdit ? "EditUser" : "CreateUser")" method="post">
+        <input type="hidden" asp-for="Id" />
+        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+        <div class="mb-3">
+            <label asp-for="FullName" class="form-label"></label>
+            <input asp-for="FullName" class="form-control" />
+            <span asp-validation-for="FullName" class="text-danger small"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Email" class="form-label"></label>
+            <input asp-for="Email" class="form-control" />
+            <span asp-validation-for="Email" class="text-danger small"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Password" class="form-label">@(isEdit ? "New Password (optional)" : "Password")</label>
+            <input asp-for="Password" class="form-control" autocomplete="new-password" />
+            <span asp-validation-for="Password" class="text-danger small"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="RoleId" class="form-label"></label>
+            <select asp-for="RoleId" class="form-select" asp-items="@(new SelectList(Model.Roles, "Id", "Name"))"></select>
+            <span asp-validation-for="RoleId" class="text-danger small"></span>
+        </div>
+
+        <div class="form-check form-switch mb-4">
+            <input asp-for="IsActive" class="form-check-input" />
+            <label asp-for="IsActive" class="form-check-label">Account active</label>
+        </div>
+
+        <div class="d-flex gap-2">
+            <button type="submit" class="btn btn-primary">
+                <i class="bi bi-check2-circle"></i> Save User
+            </button>
+            <a asp-action="Users" class="btn btn-outline-secondary">Cancel</a>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

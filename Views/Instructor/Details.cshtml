@@ -1,0 +1,72 @@
+@model Windows_Programing.Models.Instructor
+@{
+    ViewData["Title"] = "Instructor Details";
+}
+
+<div class="d-flex align-items-center gap-2 mb-4">
+    <a asp-action="Index" class="btn-back-distinct">
+        <i class="bi bi-arrow-left-short"></i> Back
+    </a>
+    <h1 class="fw-700 mb-0" style="font-size:1.5rem;">
+        <i class="bi bi-person-workspace me-2 text-primary"></i>Instructor Details
+    </h1>
+</div>
+
+<div class="row g-4 animate-in">
+    <div class="col-md-4 text-center">
+        <div class="card p-4 h-100 d-flex flex-column align-items-center justify-content-center">
+            @if (!string.IsNullOrEmpty(Model.Image))
+            {
+                <img src="~/images/uploads/@Model.Image" class="profile-image-lg mb-3" alt="@Model.Name" onerror="this.onerror=null; this.parentElement.innerHTML='<div class=&quot;avatar-placeholder mx-auto mb-3&quot; style=&quot;width:100px;height:100px;font-size:2rem;&quot;>@Model.Name[0]</div>';" />
+            }
+            else
+            {
+                <div class="avatar-placeholder mx-auto mb-3" style="width: 100px; height: 100px; font-size: 2rem;">
+                    @Model.Name[0]
+                </div>
+            }
+            <h4 class="fw-700 text-dark mb-1">@Model.Name</h4>
+            <p class="text-muted mb-3">@(Model.Course?.Name ?? "Instructor")</p>
+            <span class="badge bg-primary">@(Model.Department?.Name ?? "General Department")</span>
+        </div>
+    </div>
+    
+    <div class="col-md-8">
+        <div class="card detail-card h-100">
+            <div class="card-header d-flex align-items-center gap-2">
+                <i class="bi bi-info-circle text-primary"></i> Professional Information
+            </div>
+            <div class="card-body">
+                <div class="detail-row">
+                    <span class="detail-label">Full Name</span>
+                    <span class="detail-value fw-600">@Model.Name</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Monthly Salary</span>
+                    <span class="detail-value fw-600 text-success">EGP @Model.Salary.ToString("N2")</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Address</span>
+                    <span class="detail-value">@(string.IsNullOrEmpty(Model.Address) ? "Not Specified" : Model.Address)</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Department</span>
+                    <span class="detail-value">@(Model.Department?.Name ?? "Unassigned") (Manager: @(Model.Department?.Manager ?? "N/A"))</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Course to Teach</span>
+                    <span class="detail-value">@(Model.Course?.Name ?? "None") (Degree: @(Model.Course?.Degree ?? 0) points)</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="d-flex gap-2 mt-4">
+    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning text-white">
+        <i class="bi bi-pencil"></i> Edit Details
+    </a>
+    <a asp-action="Index" class="btn-back-distinct">
+        <i class="bi bi-list-ul"></i> All Instructors
+    </a>
+</div>

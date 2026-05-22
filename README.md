@@ -109,5 +109,5 @@ Upon initial startup, the database is seeded automatically with the following cr
 ---
 
 <p align="center">
-  Made with ❤️ for Graduation Project | 2026
+  Made with ❤️ | 2026
 </p>

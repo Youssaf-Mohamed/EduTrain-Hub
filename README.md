@@ -16,46 +16,47 @@
 
 ---
 
-## 🌟 Overview | نظرة عامة
-**EduTrain Hub** is a state-of-the-art educational and training management system designed to streamline academic administrative workflows, track course performance, and secure enterprise operations. Built on top of the robust **ASP.NET Core 9 (MVC)** architecture, it delivers exceptional performance, high responsiveness, and production-grade security.
+## 🌟 Overview
+**EduTrain Hub** is a state-of-the-art educational and training management system designed to streamline academic administrative workflows, track course performance, and secure enterprise operations. Built on top of the robust **ASP.NET Core 9 (MVC)** architecture, it delivers exceptional performance, high responsiveness, and production-grade security. 
 
-هو نظام متطور ومحترف لإدارة وتتبع العمليات التدريبية والتعليمية داخل المؤسسات ومراكز التدريب، تم بناؤه بأحدث تقنيات مايكروسوفت لتقديم أداء فائق السرعة، أمان متكامل وتجربة مستخدم متميزة.
+With a dynamic permission management engine, automated seeder initializations, and an integrated analytics dashboard, it provides a comprehensive end-to-end portal for administrators, instructors, and trainees.
 
 ---
 
-## ✨ Key Capabilities & Modules | الميزات الرئيسية
+## ✨ Key Capabilities & Modules
 
-### 🛡️ 1. Dynamic RBAC Security System (نظام صلاحيات ديناميكي متطور)
-*   **Granular Access Control:** Implements a dynamic claims-based permission scheme mapping roles to fine-grained controller actions.
-*   **Cookie Authentication:** Secure custom Cookie Authentication mechanism (`TrainMS.Auth`) with sliding expiration and automatic redirection logic.
-*   **Protected System Roles:** Implements role hierarchy protection with immutable database seeder setups.
+### 🛡️ 1. Dynamic RBAC Security System
+*   **Granular Access Control:** Implements a dynamic claims-based permission scheme mapping roles to fine-grained controller actions. Permissions are managed at the database level and verified dynamically on every request.
+*   **Cookie Authentication:** Secure custom Cookie Authentication mechanism (`TrainMS.Auth`) with sliding expiration, custom expiration timespan, and automatic login/access-denied redirection logic.
+*   **Protected System Roles:** Role hierarchy protection with immutable database seeder setups to secure default administrative access.
 
-### 📊 2. Performance Analytics Dashboard (لوحة تحليلات تفاعلية)
+### 📊 2. Performance Analytics Dashboard
 *   **Student Performance Tracking:** Provides detailed insights, student levels, grade distributions, and GPA/result metrics.
-*   **Academic KPIs:** Visualizes department sizes, instructor-to-student ratios, and success rates.
+*   **Academic KPIs:** Visualizes department sizes, instructor-to-student ratios, course success percentages, and active enrollment rates.
+*   **Modern Visual Representation:** Employs sleek, modern styling with dynamic visual layouts tailored for comprehensive reporting.
 
-### 👥 3. Instructors & Trainees Portals (إدارة المدربين والطلاب)
+### 👥 3. Instructors & Trainees Portals
 *   **Smart Instructor Directory:** An interactive search console with advanced filters for specialized tracks, department assignments, and experience levels.
 *   **Comprehensive Student Profiles:** Tracks course registration status, active cohorts, and ongoing certifications.
 
-### 📚 4. Course Management & Results Hub (الكورسات والنتائج)
+### 📚 4. Course Management & Results Hub
 *   **Curriculum Builder:** Creation, updates, and credit hour allocations for multiple specialized educational tracks.
 *   **Grades Engine:** Automated course result entries, passing score validation, and direct grade reporting sheet templates.
 
 ---
 
-## 🛠️ Architecture & Tech Stack | التقنيات والنموذج المعماري
+## 🛠️ Architecture & Tech Stack
 
 *   **Framework:** ASP.NET Core 9.0 (MVC Pattern)
 *   **Data Access:** Entity Framework Core (EF Core) with LINQ
-*   **Database Engine:** SQLite (Local development friendly, auto-migrating)
+*   **Database Engine:** SQLite (Local development friendly, auto-migrating on startup)
 *   **Asset Management:** .NET 9 Optimized Static Assets pipeline (`MapStaticAssets`)
 *   **Authorization:** Custom Dynamic Policies & Role Claims Validation
 *   **Styling:** Modern Vanilla CSS + Bootstrap, curated dark/light UI schemes, sleek transitions, and premium responsive layouts.
 
 ---
 
-## 📂 Project Structure | الهيكل التنظيمي للمشروع
+## 📂 Project Structure
 
 ```text
 ├── 📂 Controllers        # Handles all routing, actions, and API operations
@@ -71,7 +72,7 @@
 
 ---
 
-## 🚀 Installation & Local Run | التشغيل المحلي
+## 🚀 Installation & Local Run
 
 To run **EduTrain Hub** on your local machine, follow these steps:
 
@@ -100,9 +101,9 @@ To run **EduTrain Hub** on your local machine, follow these steps:
 
 ---
 
-## 🔒 Default Credentials | بيانات الدخول الافتراضية
+## 🔒 Default Credentials
 Upon initial startup, the database is seeded automatically with the following credentials for testing:
-*   **Username / Email:** `admin@edutrain.com` *(or as customized in your `AuthSeeder.cs`)*
+*   **Username / Email:** `admin@edutrain.com`
 *   **Password:** `Admin@123`
 
 ---
